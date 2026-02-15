@@ -12,6 +12,7 @@ services:
       POSTGRES_DB: mcp_demo
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:
