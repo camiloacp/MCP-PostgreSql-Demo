@@ -28,6 +28,29 @@ El proyecto tiene 3 capas:
 - [uv](https://docs.astral.sh/uv/) (gestor de paquetes)
 - PostgreSQL corriendo en localhost (o configurar los datos de conexion en el script)
 
+Estructura de la tool:
+
+```python
+@mcp.tool()
+    │
+    ├── Lee el nombre de la función → "query"
+    ├── Lee el docstring → "Ejecuta una consulta SELECT..."
+    ├── Lee los type hints → sql: str, return: str
+    ├── Genera un JSON Schema automáticamente:
+    │   {
+    │     "name": "query",
+    │     "description": "Ejecuta una consulta SELECT...",
+    │     "inputSchema": {
+    │       "type": "object",
+    │       "properties": {
+    │         "sql": { "type": "string" }
+    │       },
+    │       "required": ["sql"]
+    │     }
+    │   }
+    └── Registra la función en el servidor MCP
+```
+
 ## Instalacion
 
 ```bash
@@ -111,7 +134,7 @@ Esto abre un navegador en `http://localhost:6274` donde se puede:
 
 ## Estructura del proyecto
 
-```
+```bash
 mcp-demo/
 ├── pyproject.toml          # Dependencias y metadata del proyecto
 ├── main.py                 # Entry point basico (hello world)
@@ -119,4 +142,49 @@ mcp-demo/
 │   └── mcp/
 │       └── mcp-demo.py     # Servidor MCP con las tools de PostgreSQL
 └── README.md
+```
+
+## Flujo compleo de la peticion
+
+```javascript
+Usuario: "¿Cuántos empleados hay por departamento?"
+    │
+    ▼
+Claude (LLM): Analiza la pregunta
+    │  "Necesito consultar la base de datos"
+    │  "Voy a usar el tool 'query'"
+    ▼
+Claude → MCP Server (JSON-RPC via stdio):
+    {
+      "method": "tools/call",
+      "params": {
+        "name": "query",
+        "arguments": {
+          "sql": "SELECT departamento, COUNT(*) as total FROM empleados GROUP BY departamento"
+        }
+      }
+    }
+    │
+    ▼
+MCP Server → PostgreSQL (protocolo libpq via TCP):
+    SQL query ejecutado
+    │
+    ▼
+PostgreSQL → MCP Server:
+    Filas de resultado
+    │
+    ▼
+MCP Server → Claude (JSON-RPC via stdio):
+    {
+      "result": [
+        {"departamento": "Ingeniería", "total": 4},
+        {"departamento": "Ventas", "total": 2},
+        ...
+      ]
+    }
+    │
+    ▼
+Claude → Usuario:
+    "Hay 4 empleados en Ingeniería, 2 en Ventas,
+     2 en Marketing y 2 en Recursos Humanos."
 ```

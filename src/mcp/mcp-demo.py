@@ -22,16 +22,16 @@ def get_connection():
 @mcp.tool()
 def query(sql: str) -> str:
     """Ejecuta una consulta SELECT en la base de datos PostgreSQL."""
-    conn = get_connection()
+    conn = get_connection()                              # 1. Abrir conexión
     try:
-        cur = conn.cursor()
-        cur.execute(sql)
-        columns = [desc[0] for desc in cur.description]
-        rows = cur.fetchall()
-        result = [dict(zip(columns, row)) for row in rows]
-        return json.dumps(result, default=str, indent=2)
+        cur = conn.cursor()                              # 2. Crear cursor
+        cur.execute(sql)                                 # 3. Ejecutar SQL
+        columns = [desc[0] for desc in cur.description]  # 4. Nombres de columnas
+        rows = cur.fetchall()                            # 5. Obtener filas
+        result = [dict(zip(columns, row)) for row in rows]  # 6. Combinar
+        return json.dumps(result, default=str, indent=2) # 7. Serializar
     finally:
-        conn.close()
+        conn.close()                                     # 8. SIEMPRE cerrar la conexión
 
 
 @mcp.tool()
