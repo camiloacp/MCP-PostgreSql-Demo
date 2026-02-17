@@ -32,11 +32,11 @@ Las tools son funciones que el LLM decide invocar para realizar operaciones. El 
 
 Los resources exponen datos estaticos o semi-estaticos que el cliente MCP puede leer directamente, sin que el LLM necesite invocar un tool. Funcionan como endpoints de lectura identificados por una URI.
 
-| Resource                          | URI                          | Descripcion                                    |
-| --------------------------------- | ---------------------------- | ---------------------------------------------- |
-| `get_schema()`                    | `schema://tables`            | Lista de todas las tablas                       |
-| `get_table_schema(table_name)`    | `schema://tables/{table_name}` | Esquema detallado de una tabla especifica    |
-| `get_db_stats()`                  | `db://stats`                 | Cantidad de filas por tabla                     |
+| Resource                       | URI                            | Descripcion                               |
+| ------------------------------ | ------------------------------ | ----------------------------------------- |
+| `get_schema()`                 | `schema://tables`              | Lista de todas las tablas                 |
+| `get_table_schema(table_name)` | `schema://tables/{table_name}` | Esquema detallado de una tabla especifica |
+| `get_db_stats()`               | `db://stats`                   | Cantidad de filas por tabla               |
 
 La diferencia clave con las tools es que los **resources** representan contexto/datos que el modelo puede consultar, mientras que las **tools** representan acciones que el modelo decide ejecutar.
 
@@ -44,10 +44,10 @@ La diferencia clave con las tools es que los **resources** representan contexto/
 
 Los prompts son plantillas predefinidas que guian al LLM sobre que tools usar y en que orden. No ejecutan nada por si mismas, solo devuelven texto con instrucciones paso a paso. El cliente puede listarlas y el usuario elige cual ejecutar.
 
-| Prompt                            | Descripcion                                                    |
-| --------------------------------- | -------------------------------------------------------------- |
-| `analizar_tabla(table_name)`      | Genera un analisis completo de una tabla: estructura y datos   |
-| `reporte_resumido()`              | Genera un reporte ejecutivo de toda la base de datos           |
+| Prompt                       | Descripcion                                                  |
+| ---------------------------- | ------------------------------------------------------------ |
+| `analizar_tabla(table_name)` | Genera un analisis completo de una tabla: estructura y datos |
+| `reporte_resumido()`         | Genera un reporte ejecutivo de toda la base de datos         |
 
 ### `@contextmanager` — Gestion automatica de conexiones
 
@@ -239,3 +239,8 @@ Claude → Usuario:
     "Hay 4 empleados en Ingeniería, 2 en Ventas,
      2 en Marketing y 2 en Recursos Humanos."
 ```
+
+## Recursos
+
+- [Documentacion](!https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Repositorios MCP](!https://github.com/modelcontextprotocol/servers)
